@@ -175,9 +175,6 @@ if exists('g:capslock_command_mode')
     map  <script> :    :<SID>CapsLockDisable
     map  <script> /    /<SID>CapsLockDisable
     map  <script> ?    ?<SID>CapsLockDisable
-    cmap <script> <CR>  <SID>CapsLockDisable<CR>
-    " Breaks arrow keys
-    "cmap <script> <Esc> <SID>CapsLockDisable<Esc>
 endif
 
 " }}}1
