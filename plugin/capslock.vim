@@ -1,50 +1,8 @@
-" capslock.vim - Software Caps Lock
+" capslock.vim - Software caps lock
 " Maintainer:   Tim Pope
 " Version:      1.1
 " GetLatestVimScripts: 1725 1 :AutoInstall: capslock.vim
 
-" This plugin enables a software caps lock.  This is advantageous over a
-" regular caps lock in that normal mode commands, other buffers, and other
-" applications are unaffected.
-"
-" The default insert mode mapping is <C-G>c, and there is no default normal
-" mode mapping..  If you make frequent use of this feature, you will probably
-" want to change this.  Try something like
-"
-"   imap <C-L>     <Plug>CapsLockToggle
-"   nmap <Leader>l <Plug>CapsLockToggle
-"
-" Alternatively, enable the shorter insert mode mapping on a per-filetype
-" basis:
-"
-"   autocmd FileType sql,cobol imap <buffer> <C-L> <Plug>CapsLockToggle
-"
-" <Plug>CapsLockEnable and <Plug>CapsLockDisable are also provided.
-"
-" One may prefer a normal mode mapping that enters insert mode and activates
-" caps lock:
-"
-"   nmap <Leader>i i<Plug>CapsLockToggle
-"
-" By default, caps lock is automatically disabled after leaving insert mode
-" for the insert mode mappings, but must be explicitly disabled for the normal
-" mode mappings.  If you always want to use the latter method, make your
-" insert mode mapping call the normal mode one.
-"
-"   imap <C-L> <C-O><Plug>CapsLockToggle
-"
-" Two functions, CapsLockStatusline() and CapsLockSTATUSLINE(), are provided
-" for use inside %{} in your statusline.  These respectively return "[caps]"
-" and ",CAPS" if the software caps lock is enabled.  Here's an example usage
-" that won't cause problems if capslock.vim is missing:
-"
-"   set statusline=...%{exists('*CapsLockStatusline')?CapsLockStatusline():''}
-
-" ============================================================================
-
-" Exit quickly when:
-" - this plugin was already loaded (or disabled)
-" - when 'compatible' is set
 if (exists("g:loaded_capslock") && g:loaded_capslock) || &cp
     finish
 endif
