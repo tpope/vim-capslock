@@ -82,12 +82,14 @@ function! s:enable(mode,...)
 endfunction
 
 function! s:disable(mode)
-    let i = char2nr('A')
-    while i <= char2nr('Z')
-        silent! exe a:mode."unmap" s:buffer nr2char(i)
-        silent! exe a:mode."unmap" s:buffer nr2char(i+32)
-        let i = i + 1
-    endwhile
+    if s:enabled(a:mode)
+        let i = char2nr('A')
+        while i <= char2nr('Z')
+            silent! exe a:mode."unmap" s:buffer nr2char(i)
+            silent! exe a:mode."unmap" s:buffer nr2char(i+32)
+            let i = i + 1
+        endwhile
+    endif
     unlet! b:capslock_persist
     if exists('g:capslock_global')
         unlet! g:capslock_persist
