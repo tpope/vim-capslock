@@ -22,13 +22,20 @@ else
     let s:buffer = '<buffer>'
 endif
 
+function! s:initsettings()
+    let l:capslock_key_mapping_default = {}
+    for i in range(char2nr('a'), char2nr('z'))
+        let l:capslock_key_mapping_default[nr2char(i)] = nr2char(i-32)
+    endfor
+    let g:capslock_key_mapping = get(g:, 'capslock_key_mapping', {})
+    call extend(g:capslock_key_mapping, l:capslock_key_mapping_default, 'keep')
+endfunction
+
 function! s:enable(mode,...)
-    let i = char2nr('A')
-    while i <= char2nr('Z')
-        exe a:mode."noremap" s:buffer nr2char(i) nr2char(i+32)
-        exe a:mode."noremap" s:buffer nr2char(i+32) nr2char(i)
-        let i = i + 1
-    endwhile
+    for item in items(get(g:, 'capslock_key_mapping', {}))
+        exe a:mode.'noremap' s:buffer item[0] item[1]
+        exe a:mode.'noremap' s:buffer item[1] item[0]
+    endfor
     if a:0 && a:1
         if exists('g:capslock_global')
             let g:capslock_persist = 1
@@ -41,12 +48,10 @@ endfunction
 
 function! s:disable(mode)
     if s:enabled(a:mode)
-        let i = char2nr('A')
-        while i <= char2nr('Z')
-            silent! exe a:mode."unmap" s:buffer nr2char(i)
-            silent! exe a:mode."unmap" s:buffer nr2char(i+32)
-            let i = i + 1
-        endwhile
+        for item in keys(get(g:, 'capslock_custom_mapping', {}))
+            silent! exe a:mode.'unmap' s:buffer item[0]
+            silent! exe a:mode.'unmap' s:buffer item[1]
+        endfor
     endif
     unlet! b:capslock_persist
     if exists('g:capslock_global')
@@ -101,6 +106,7 @@ function! CapsLockSTATUSLINE()
 endfunction
 
 augroup capslock
+    autocmd VimEnter * call s:initsettings()
     if v:version >= 700
         autocmd InsertLeave * call s:exitcallback()
     endif
