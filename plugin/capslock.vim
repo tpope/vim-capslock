@@ -3,8 +3,8 @@
 " Version:      1.1
 " GetLatestVimScripts: 1725 1 :AutoInstall: capslock.vim
 
-if (exists("g:loaded_capslock") && g:loaded_capslock) || &cp
-    finish
+if (exists("g:loaded_capslock") && g:loaded_capslock) || v:version < 700 || &cp
+  finish
 endif
 let g:loaded_capslock = 1
 
@@ -13,98 +13,51 @@ set cpo&vim
 
 " Code {{{1
 
-" Uses for this should be rare, but if you :let the following variable, caps
-" lock state should be tracked globally.  Largely untested, let me know if you
-" have problems.
-if exists('g:capslock_global')
-    let s:buffer = ''
-else
-    let s:buffer = '<buffer>'
-endif
-
-function! s:enable(mode,...)
-    let i = char2nr('A')
-    while i <= char2nr('Z')
-        exe a:mode."noremap" s:buffer nr2char(i) nr2char(i+32)
-        exe a:mode."noremap" s:buffer nr2char(i+32) nr2char(i)
-        let i = i + 1
-    endwhile
-    if a:0 && a:1
-        if exists('g:capslock_global')
-            let g:capslock_persist = 1
-        else
-            let b:capslock_persist = 1
-        endif
-    endif
-    return ""
+function! s:enable(...)
+  let b:capslock = 1 + a:0
+  return ''
 endfunction
 
-function! s:disable(mode)
-    if s:enabled(a:mode)
-        let i = char2nr('A')
-        while i <= char2nr('Z')
-            silent! exe a:mode."unmap" s:buffer nr2char(i)
-            silent! exe a:mode."unmap" s:buffer nr2char(i+32)
-            let i = i + 1
-        endwhile
-    endif
-    unlet! b:capslock_persist
-    if exists('g:capslock_global')
-        unlet! g:capslock_persist
-    endif
-    return ""
+function! s:disable()
+  unlet! b:capslock
+  return ''
 endfunction
 
-function! s:toggle(mode,...)
-    if s:enabled(a:mode)
-        call s:disable(a:mode)
-    else
-        if a:0
-            call s:enable(a:mode,a:1)
-        else
-            call s:enable(a:mode)
-        endif
-    endif
-    return ""
+function! s:toggle(...)
+  if s:enabled()
+    return s:disable()
+  elseif a:0
+    return s:enable(a:1)
+  else
+    return s:enable()
+  endif
 endfunction
 
-function! s:enabled(mode)
-    return maparg('a',a:mode) == 'A'
+function! s:enabled()
+  return get(b:, 'capslock', 0)
 endfunction
 
 function! s:exitcallback()
-    if !exists('g:capslock_persist') && !exists('b:capslock_persist') && s:enabled('i')
-        call s:disable('i')
-    endif
+  if get(b:, 'capslock', 0) == 1
+    unlet b:capslock
+  endif
 endfunction
 
 function! CapsLockStatusline()
-    if mode() == 'c' && s:enabled('c')
-        " This won't actually fire because the statusline is apparently not
-        " updated in command mode
-        return '[(caps)]'
-    elseif s:enabled('i')
-        return '[caps]'
-    else
-        return ''
-    endif
+  return s:enabled() ? '[caps]' : ''
 endfunction
 
 function! CapsLockSTATUSLINE()
-    if mode() == 'c' && s:enabled('c')
-        return ',(CAPS)'
-    elseif s:enabled('i')
-        return ',CAPS'
-    else
-        return ''
-    endif
+  return s:enabled() ? ',CAPS' : ''
 endfunction
 
 augroup capslock
-    if v:version >= 700
-        autocmd InsertLeave * call s:exitcallback()
-    endif
-    autocmd CursorHold  * call s:exitcallback()
+  autocmd CursorHold  * call s:exitcallback()
+  autocmd InsertLeave * call s:exitcallback()
+  autocmd InsertCharPre *
+        \ if s:enabled() |
+        \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
+        \ endif
 augroup END
 
 " }}}1
@@ -122,21 +75,11 @@ cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 cnoremap <silent>  <SID>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
 if !hasmapto("<Plug>CapsLockToggle")
-    imap <C-G>c <Plug>CapsLockToggle
-endif
-
-" Enable g:capslock_command_mode if you want capslock.vim to attempt to
-" disable command mode caps lock after each :command.  This is hard to trap
-" elegantly so it is disabled by default.  If you use this, you still must
-" provide your own command mode mapping.
-if exists('g:capslock_command_mode')
-    map  <script> :    :<SID>CapsLockDisable
-    map  <script> /    /<SID>CapsLockDisable
-    map  <script> ?    ?<SID>CapsLockDisable
+  imap <C-G>c <Plug>CapsLockToggle
 endif
 
 " }}}1
 
 let &cpo = s:cpo_save
 
-" vim:set ft=vim ff=unix ts=8 sw=4 sts=4:
+" vim:set sw=2 et:
