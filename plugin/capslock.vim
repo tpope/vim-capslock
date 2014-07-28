@@ -63,16 +63,12 @@ augroup END
 " }}}1
 " Maps {{{1
 
-noremap  <silent> <Plug>CapsLockToggle  :<C-U>call <SID>toggle('i',1)<CR>
-noremap  <silent> <Plug>CapsLockEnable  :<C-U>call <SID>enable('i',1)<CR>
-noremap  <silent> <Plug>CapsLockDisable :<C-U>call <SID>disable('i')<CR>
-inoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('i')<CR>
-inoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('i')<CR>
-inoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('i')<CR>
-cnoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('c')<CR>
-cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
-cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
-cnoremap <silent>  <SID>CapsLockDisable <C-R>=<SID>disable('c')<CR>
+noremap  <silent> <Plug>CapsLockToggle  :<C-U>call <SID>toggle(1)<CR>
+noremap  <silent> <Plug>CapsLockEnable  :<C-U>call <SID>enable(1)<CR>
+noremap  <silent> <Plug>CapsLockDisable :<C-U>call <SID>disable()<CR>
+inoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle()<CR>
+inoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable()<CR>
+inoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable()<CR>
 
 if !hasmapto("<Plug>CapsLockToggle")
   imap <C-G>c <Plug>CapsLockToggle
