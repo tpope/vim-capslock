@@ -13,62 +13,104 @@ set cpo&vim
 
 " Code {{{1
 
-function! s:enable(...)
-  let b:capslock = 1 + a:0
-  return ''
-endfunction
-
-function! s:disable()
-  unlet! b:capslock
-  return ''
-endfunction
-
-function! s:toggle(...)
-  if s:enabled()
-    return s:disable()
-  elseif a:0
-    return s:enable(a:1)
+function! s:enable(mode,...)
+  if a:mode == 'i' && exists('##InsertCharPre')
+    let b:capslock = 1 + a:0
   else
-    return s:enable()
+    let i = char2nr('A')
+    while i <= char2nr('Z')
+        exe a:mode."noremap <buffer>" nr2char(i) nr2char(i+32)
+        exe a:mode."noremap <buffer>" nr2char(i+32) nr2char(i)
+        let i = i + 1
+    endwhile
+  endif
+  return ''
+endfunction
+
+function! s:disable(mode)
+  if a:mode == 'i' && exists('##InsertCharPre')
+    unlet! b:capslock
+  else
+    let i = char2nr('A')
+    while i <= char2nr('Z')
+      silent! exe a:mode."unmap <buffer>" nr2char(i)
+      silent! exe a:mode."unmap <buffer>" nr2char(i+32)
+      let i = i + 1
+    endwhile
+  endif
+  return ''
+endfunction
+
+function! s:toggle(mode,...)
+  if s:enabled(a:mode)
+    return s:disable(a:mode)
+  elseif a:0
+    return s:enable(a:mode,a:1)
+  else
+    return s:enable(a:mode)
   endif
 endfunction
 
-function! s:enabled()
-  return get(b:, 'capslock', 0)
+function! s:enabled(mode)
+  if a:mode == 'i' && exists('##InsertCharPre')
+    return get(b:, 'capslock', 0)
+  else
+    return maparg('a',a:mode) == 'A'
+  endif
 endfunction
 
 function! s:exitcallback()
-  if get(b:, 'capslock', 0) == 1
-    unlet b:capslock
+  if s:enabled('i')
+    call s:disable('i')
   endif
 endfunction
 
 function! CapsLockStatusline()
-  return s:enabled() ? '[caps]' : ''
+  if mode() == 'c' && s:enabled('c')
+    " This won't actually fire because the statusline is apparently not
+    " updated in command mode
+    return '[(caps)]'
+  elseif s:enabled('i')
+    return '[caps]'
+  else
+    return ''
+  endif
 endfunction
 
 function! CapsLockSTATUSLINE()
-  return s:enabled() ? ',CAPS' : ''
+  if mode() == 'c' && s:enabled('c')
+    return ',(CAPS)'
+  elseif s:enabled('i')
+    return ',CAPS'
+  else
+    return ''
+  endif
 endfunction
 
-augroup capslock
-  autocmd CursorHold  * call s:exitcallback()
-  autocmd InsertLeave * call s:exitcallback()
-  autocmd InsertCharPre *
-        \ if s:enabled() |
-        \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
-        \ endif
-augroup END
+if exists('##InsertCharPre')
+  augroup capslock
+    autocmd CursorHold  * call s:exitcallback()
+    autocmd InsertLeave * call s:exitcallback()
+    autocmd InsertCharPre *
+          \ if s:enabled('i') |
+          \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
+          \ endif
+  augroup END
+endif
 
 " }}}1
 " Maps {{{1
 
-noremap  <silent> <Plug>CapsLockToggle  :<C-U>call <SID>toggle(1)<CR>
-noremap  <silent> <Plug>CapsLockEnable  :<C-U>call <SID>enable(1)<CR>
-noremap  <silent> <Plug>CapsLockDisable :<C-U>call <SID>disable()<CR>
-inoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle()<CR>
-inoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable()<CR>
-inoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable()<CR>
+noremap  <silent> <Plug>CapsLockToggle  :<C-U>call <SID>toggle('i',1)<CR>
+noremap  <silent> <Plug>CapsLockEnable  :<C-U>call <SID>enable('i',1)<CR>
+noremap  <silent> <Plug>CapsLockDisable :<C-U>call <SID>disable('i')<CR>
+inoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('i')<CR>
+inoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('i')<CR>
+inoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('i')<CR>
+cnoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('c')<CR>
+cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
+cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
+cnoremap <silent>  <SID>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
 if !hasmapto("<Plug>CapsLockToggle")
   imap <C-G>c <Plug>CapsLockToggle
