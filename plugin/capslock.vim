@@ -24,6 +24,7 @@ function! s:enable(mode,...)
         let i = i + 1
     endwhile
   endif
+  let &readonly = &readonly
   return ''
 endfunction
 
@@ -38,6 +39,7 @@ function! s:disable(mode)
       let i = i + 1
     endwhile
   endif
+  let &readonly = &readonly
   return ''
 endfunction
 
