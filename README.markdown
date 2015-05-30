@@ -2,8 +2,7 @@
 
 Press `<C-G>c` in insert mode to get a temporary software caps lock.
 
-Installation
-------------
+## Installation
 
 If you don't have a preferred installation method, I recommend
 installing [pathogen.vim](https://github.com/tpope/vim-pathogen), and
