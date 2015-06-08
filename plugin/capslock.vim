@@ -13,7 +13,7 @@ set cpo&vim
 
 " Code {{{1
 
-function! s:enable(mode,...)
+function! s:enable(mode, ...) abort
   if a:mode == 'i' && exists('##InsertCharPre')
     let b:capslock = 1 + a:0
   else
@@ -28,7 +28,7 @@ function! s:enable(mode,...)
   return ''
 endfunction
 
-function! s:disable(mode)
+function! s:disable(mode) abort
   if a:mode == 'i' && exists('##InsertCharPre')
     unlet! b:capslock
   else
@@ -43,7 +43,7 @@ function! s:disable(mode)
   return ''
 endfunction
 
-function! s:toggle(mode,...)
+function! s:toggle(mode, ...) abort
   if s:enabled(a:mode)
     return s:disable(a:mode)
   elseif a:0
@@ -53,7 +53,7 @@ function! s:toggle(mode,...)
   endif
 endfunction
 
-function! s:enabled(mode)
+function! s:enabled(mode) abort
   if a:mode == 'i' && exists('##InsertCharPre')
     return get(b:, 'capslock', 0)
   else
@@ -61,13 +61,13 @@ function! s:enabled(mode)
   endif
 endfunction
 
-function! s:exitcallback()
+function! s:exitcallback() abort
   if s:enabled('i')
     call s:disable('i')
   endif
 endfunction
 
-function! CapsLockStatusline()
+function! CapsLockStatusline() abort
   if mode() == 'c' && s:enabled('c')
     " This won't actually fire because the statusline is apparently not
     " updated in command mode
@@ -79,7 +79,7 @@ function! CapsLockStatusline()
   endif
 endfunction
 
-function! CapsLockSTATUSLINE()
+function! CapsLockSTATUSLINE() abort
   if mode() == 'c' && s:enabled('c')
     return ',(CAPS)'
   elseif s:enabled('i')
