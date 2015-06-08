@@ -89,16 +89,16 @@ function! CapsLockSTATUSLINE() abort
   endif
 endfunction
 
-if exists('##InsertCharPre')
-  augroup capslock
-    autocmd CursorHold  * call s:exitcallback()
-    autocmd InsertLeave * call s:exitcallback()
+augroup capslock
+  autocmd!
+  autocmd InsertLeave * call s:exitcallback()
+  if exists('##InsertCharPre')
     autocmd InsertCharPre *
           \ if s:enabled('i') |
           \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
           \ endif
-  augroup END
-endif
+  endif
+augroup END
 
 " }}}1
 " Maps {{{1
