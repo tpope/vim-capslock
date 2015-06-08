@@ -3,7 +3,7 @@
 " Version:      1.1
 " GetLatestVimScripts: 1725 1 :AutoInstall: capslock.vim
 
-if (exists("g:loaded_capslock") && g:loaded_capslock) || v:version < 700 || &cp
+if exists("g:loaded_capslock") || v:version < 700 || &cp
   finish
 endif
 let g:loaded_capslock = 1
