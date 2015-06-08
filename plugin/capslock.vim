@@ -1,5 +1,5 @@
 " capslock.vim - Software caps lock
-" Maintainer:   Tim Pope
+" Maintainer:   Tim Pope <https://tpo.pe/>
 " Version:      1.1
 " GetLatestVimScripts: 1725 1 :AutoInstall: capslock.vim
 
