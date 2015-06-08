@@ -14,9 +14,8 @@ set cpo&vim
 " Code {{{1
 
 function! s:enable(mode, ...) abort
-  if a:mode == 'i' && exists('##InsertCharPre')
-    let b:capslock = 1 + a:0
-  else
+  let b:capslock = 1 + a:0
+  if a:mode == 'c' || !exists('##InsertCharPre')
     let i = char2nr('A')
     while i <= char2nr('Z')
         exe a:mode."noremap <buffer>" nr2char(i) nr2char(i+32)
@@ -29,9 +28,8 @@ function! s:enable(mode, ...) abort
 endfunction
 
 function! s:disable(mode) abort
-  if a:mode == 'i' && exists('##InsertCharPre')
-    unlet! b:capslock
-  else
+  unlet! b:capslock
+  if a:mode == 'c' || !exists('##InsertCharPre')
     let i = char2nr('A')
     while i <= char2nr('Z')
       silent! exe a:mode."unmap <buffer>" nr2char(i)
@@ -62,7 +60,7 @@ function! s:enabled(mode) abort
 endfunction
 
 function! s:exitcallback() abort
-  if s:enabled('i')
+  if s:enabled('i') == 1
     call s:disable('i')
   endif
 endfunction
