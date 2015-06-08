@@ -115,7 +115,7 @@ cnoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('c')<CR>
 cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
 cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
-if !hasmapto("<Plug>CapsLockToggle") && empty(mapcheck("<C-L>", "i"))
+if empty(mapcheck("<C-L>", "i"))
   imap <C-L> <Plug>CapsLockToggle
 endif
 imap <C-G>c <Plug>CapsLockToggle
