@@ -14,7 +14,9 @@ set cpo&vim
 " Code {{{1
 
 function! s:enable(mode, ...) abort
-  let b:capslock = 1 + a:0
+  if a:mode == 'i'
+    let b:capslock = 1 + a:0
+  endif
   if a:mode == 'c' || !exists('##InsertCharPre')
     let i = char2nr('A')
     while i <= char2nr('Z')
@@ -28,7 +30,9 @@ function! s:enable(mode, ...) abort
 endfunction
 
 function! s:disable(mode) abort
-  unlet! b:capslock
+  if a:mode == 'i'
+    unlet! b:capslock
+  endif
   if a:mode == 'c' || !exists('##InsertCharPre')
     let i = char2nr('A')
     while i <= char2nr('Z')
