@@ -25,8 +25,8 @@ mapping call the normal mode one.
 >
         imap <C-L> <C-O><Plug>CapsLockToggle
 <
-CapsLockStatusline() is provided use inside %{} in 'statusline'.  This returns
-"[Caps]" (or the optional first argument) if the software caps lock is
+CapsLockStatusline() is provided to use inside %{} in 'statusline'.  This
+returns "[Caps]" (or the optional first argument) if software caps lock is
 enabled.  Here's an example usage that won't cause problems if capslock.vim is
 missing:
 >
