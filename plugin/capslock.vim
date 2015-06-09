@@ -69,26 +69,8 @@ function! s:exitcallback() abort
   endif
 endfunction
 
-function! CapsLockStatusline() abort
-  if mode() == 'c' && s:enabled('c')
-    " This won't actually fire because the statusline is apparently not
-    " updated in command mode
-    return '[(caps)]'
-  elseif s:enabled('i')
-    return '[caps]'
-  else
-    return ''
-  endif
-endfunction
-
-function! CapsLockSTATUSLINE() abort
-  if mode() == 'c' && s:enabled('c')
-    return ',(CAPS)'
-  elseif s:enabled('i')
-    return ',CAPS'
-  else
-    return ''
-  endif
+function! CapsLockStatusline(...) abort
+  return s:enabled('i') ? (a:0 == 1 ? a:1 : '[Caps]') : ''
 endfunction
 
 augroup capslock
