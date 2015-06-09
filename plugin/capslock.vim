@@ -25,7 +25,7 @@ function! s:enable(mode, ...) abort
         let i = i + 1
     endwhile
   endif
-  let &readonly = &readonly
+  let &l:readonly = &l:readonly
   return ''
 endfunction
 
@@ -41,7 +41,7 @@ function! s:disable(mode) abort
       let i = i + 1
     endwhile
   endif
-  let &readonly = &readonly
+  let &l:readonly = &l:readonly
   return ''
 endfunction
 
