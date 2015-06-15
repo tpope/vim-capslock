@@ -75,6 +75,8 @@ endfunction
 
 augroup capslock
   autocmd!
+  autocmd User Flags call Hoist('window', 'CapsLockStatusline')
+
   autocmd InsertLeave * call s:exitcallback()
   if exists('##InsertCharPre')
     autocmd InsertCharPre *
