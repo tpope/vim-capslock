@@ -99,11 +99,14 @@ cnoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('c')<CR>
 cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
 cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
-if empty(mapcheck("<C-L>", "i"))
-  imap <C-L> <Plug>CapsLockToggle
+if get(g:, 'capslock#default_keymap', 0)
+  if empty(mapcheck("<C-L>", "i"))
+    imap <C-L> <Plug>CapsLockToggle
+  else
+    imap <C-G>c <Plug>CapsLockToggle
+  endif
+  nmap gC <Plug>CapsLockToggle
 endif
-imap <C-G>c <Plug>CapsLockToggle
-nmap gC <Plug>CapsLockToggle
 
 " }}}1
 
