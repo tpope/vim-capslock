@@ -59,25 +59,27 @@ function! s:enabled(mode) abort
   if a:mode == 'i' && exists('##InsertCharPre')
     return get(b:, 'capslock', 0)
   else
-    return maparg('a',a:mode) == 'A'
+    return maparg('a',a:mode) ==# 'A'
   endif
 endfunction
 
-function! s:exitcallback() abort
-  if s:enabled('i') == 1
-    call s:disable('i')
+function! s:exitcallback(mode) abort
+  if s:enabled(a:mode)
+    call s:disable(a:mode)
   endif
 endfunction
 
 function! CapsLockStatusline(...) abort
-  return s:enabled('i') ? (a:0 == 1 ? a:1 : '[Caps]') : ''
+  return (s:enabled('i') || s:enabled('c')) ? (a:0 == 1 ? a:1 : '[Caps]') : ''
 endfunction
 
 augroup capslock
   autocmd!
   autocmd User Flags call Hoist('window', 'CapsLockStatusline')
 
-  autocmd InsertLeave * call s:exitcallback()
+  autocmd CmdlineLeave : call s:exitcallback('c')
+
+  autocmd InsertLeave * call s:exitcallback('i')
   if exists('##InsertCharPre')
     autocmd InsertCharPre *
           \ if s:enabled('i') |
