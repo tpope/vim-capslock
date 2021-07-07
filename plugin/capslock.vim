@@ -100,7 +100,11 @@ cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
 cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
 if empty(mapcheck("<C-L>", "i"))
-  imap <C-L> <Plug>CapsLockToggle
+  if exists("*complete_info")
+    imap <expr> <C-L> empty(complete_info(['mode']).mode) ? "<Plug>CapsLockToggle" : "<C-L>"
+  else
+    imap <C-L> <Plug>CapsLockToggle
+  endif
 endif
 imap <C-G>c <Plug>CapsLockToggle
 nmap gC <Plug>CapsLockToggle
