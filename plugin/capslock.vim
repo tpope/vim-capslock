@@ -101,7 +101,13 @@ cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
 if empty(mapcheck("<C-L>", "i"))
   if exists("*complete_info")
-    imap <expr> <C-L> empty(complete_info(['mode']).mode) ? "<Plug>CapsLockToggle" : "<C-L>"
+    function! s:ctrl_l() abort
+      let l:compl_mode = complete_info(['mode']).mode
+      return l:compl_mode ==# 'ctrl_x' || l:compl_mode ==# 'whole_line' ||
+           \ (pumvisible() && complete_info(['selected']).selected !=# -1)
+           \ ? "\<C-L>" : "\<Plug>CapsLockToggle"
+    endfunction
+    imap <expr> <C-L> <SID>ctrl_l()
   else
     imap <C-L> <Plug>CapsLockToggle
   endif
