@@ -3,7 +3,7 @@
 " Version:      1.1
 " GetLatestVimScripts: 1725 1 :AutoInstall: capslock.vim
 
-if exists("g:loaded_capslock") || v:version < 700 || &cp
+if exists("g:loaded_capslock") || v:version < 704 || &cp
   finish
 endif
 let g:loaded_capslock = 1
@@ -17,7 +17,7 @@ function! s:enable(mode, ...) abort
   if a:mode == 'i'
     let b:capslock = 1 + a:0
   endif
-  if a:mode == 'c' || !exists('##InsertCharPre')
+  if a:mode == 'c'
     let i = char2nr('A')
     while i <= char2nr('Z')
         exe a:mode."noremap <buffer>" nr2char(i) nr2char(i+32)
@@ -33,7 +33,7 @@ function! s:disable(mode) abort
   if a:mode == 'i'
     unlet! b:capslock
   endif
-  if a:mode == 'c' || !exists('##InsertCharPre')
+  if a:mode == 'c'
     let i = char2nr('A')
     while i <= char2nr('Z')
       silent! exe a:mode."unmap <buffer>" nr2char(i)
@@ -56,7 +56,7 @@ function! s:toggle(mode, ...) abort
 endfunction
 
 function! s:enabled(mode) abort
-  if a:mode == 'i' && exists('##InsertCharPre')
+  if a:mode == 'i'
     return get(b:, 'capslock', 0)
   else
     return maparg('a',a:mode) == 'A'
@@ -78,12 +78,10 @@ augroup capslock
   autocmd User Flags call Hoist('window', 'CapsLockStatusline')
 
   autocmd InsertLeave * call s:exitcallback()
-  if exists('##InsertCharPre')
-    autocmd InsertCharPre *
-          \ if s:enabled('i') |
-          \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
-          \ endif
-  endif
+  autocmd InsertCharPre *
+        \ if s:enabled('i') |
+        \   let v:char = v:char ==# tolower(v:char) ? toupper(v:char) : tolower(v:char) |
+        \ endif
 augroup END
 
 " }}}1
