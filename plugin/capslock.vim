@@ -14,10 +14,10 @@ set cpo&vim
 " Code {{{1
 
 function! s:enable(mode, ...) abort
-  if a:mode == 'i'
+  if a:mode ==# 'i'
     let b:capslock = 1 + a:0
   endif
-  if a:mode == 'c'
+  if a:mode ==# 'c'
     let i = char2nr('A')
     while i <= char2nr('Z')
         exe a:mode."noremap <buffer>" nr2char(i) nr2char(i+32)
@@ -30,15 +30,15 @@ function! s:enable(mode, ...) abort
 endfunction
 
 function! s:disable(mode) abort
-  if a:mode == 'i'
+  if a:mode ==# 'i'
     unlet! b:capslock
   endif
-  if a:mode == 'c'
+  if a:mode ==# 'c'
     let i = char2nr('A')
     while i <= char2nr('Z')
       silent! exe a:mode."unmap <buffer>" nr2char(i)
       silent! exe a:mode."unmap <buffer>" nr2char(i+32)
-      let i = i + 1
+      let i += 1
     endwhile
   endif
   let &l:readonly = &l:readonly
@@ -56,10 +56,10 @@ function! s:toggle(mode, ...) abort
 endfunction
 
 function! s:enabled(mode) abort
-  if a:mode == 'i'
+  if a:mode ==# 'i'
     return get(b:, 'capslock', 0)
   else
-    return maparg('a',a:mode) == 'A'
+    return maparg('a', a:mode) ==# 'A'
   endif
 endfunction
 
