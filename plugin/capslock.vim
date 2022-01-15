@@ -97,18 +97,15 @@ cnoremap <silent> <Plug>CapsLockToggle  <C-R>=<SID>toggle('c')<CR>
 cnoremap <silent> <Plug>CapsLockEnable  <C-R>=<SID>enable('c')<CR>
 cnoremap <silent> <Plug>CapsLockDisable <C-R>=<SID>disable('c')<CR>
 
-if empty(mapcheck("<C-L>", "i"))
-  if exists("*complete_info")
-    function! s:ctrl_l() abort
-      let l:compl_mode = complete_info(['mode']).mode
-      return l:compl_mode ==# 'ctrl_x' || l:compl_mode ==# 'whole_line' ||
-           \ (pumvisible() && complete_info(['selected']).selected !=# -1)
-           \ ? "\<C-L>" : "\<Plug>CapsLockToggle"
-    endfunction
-    imap <expr> <C-L> <SID>ctrl_l()
-  else
-    imap <C-L> <Plug>CapsLockToggle
-  endif
+if empty(mapcheck("<C-L>", "i")) && exists("*complete_info") && !&insertmode
+  function! s:ctrl_l() abort
+    let l:compl_mode = complete_info(['mode']).mode
+    return l:compl_mode ==# 'ctrl_x' || l:compl_mode ==# 'whole_line' ||
+          \ (pumvisible() && complete_info(['selected']).selected !=# -1) ||
+          \ &insertmode
+          \ ? "\<C-L>" : "\<Plug>CapsLockToggle"
+  endfunction
+  imap <expr> <C-L> <SID>ctrl_l()
 endif
 imap <C-G>c <Plug>CapsLockToggle
 nmap gC <Plug>CapsLockToggle
