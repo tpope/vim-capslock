@@ -107,8 +107,12 @@ if empty(mapcheck("<C-L>", "i")) && exists("*complete_info") && !&insertmode
   endfunction
   imap <expr> <C-L> <SID>ctrl_l()
 endif
-imap <C-G>c <Plug>CapsLockToggle
-nmap gC <Plug>CapsLockToggle
+if empty(mapcheck("<C-G>c", "i"))
+  imap <C-G>c <Plug>CapsLockToggle
+endif
+if empty(mapcheck("gC", "n"))
+  nmap gC <Plug>CapsLockToggle
+endif
 
 " }}}1
 
