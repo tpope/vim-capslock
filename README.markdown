@@ -10,7 +10,7 @@ installing [pathogen.vim](https://github.com/tpope/vim-pathogen), and
 then simply copy and paste:
 
     cd ~/.vim/bundle
-    git clone git://github.com/tpope/vim-capslock.git
+    git clone https://github.com/tpope/vim-capslock.git
     vim -u NONE -c "helptags vim-capslock/doc" -c q
 
 Once help tags have been generated, you can view the manual with
